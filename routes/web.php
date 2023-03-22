@@ -2,7 +2,7 @@
 use Illuminate\Support\Facades\Route;
 
 // App Controller Prefix
-(!defined('GUEST_PREFIX_APP')) && define('GUEST_PREFIX_APP',"App\Http\Controllers\Application\Guest\\");
+(!defined("GUEST_PREFIX_APP")) && define("GUEST_PREFIX_APP","App\Http\Controllers\Application\Guest\\");
 
 /*
 |--------------------------------------------------------------------------
@@ -22,13 +22,13 @@ Route::get('/', function () {
 /**
  * Auth Prefix Path
  */
-Route::prefix('auth')->group(function() {
+Route::prefix("auth")->group(function() {
     /**
      * Login Path
      */
-    Route::get('/', GUEST_PREFIX_APP . Auth\Login\LoginViewController::class);
+    Route::get("/", GUEST_PREFIX_APP . Auth\Login\LoginViewController::class)->name('application.guest.auth.login.view');
     /**
      * Registration Path
      */
-    Route::get('/registration', GUEST_PREFIX_APP . Auth\Registration\RegistrationViewController::class);
+    Route::get("/registration", GUEST_PREFIX_APP . Auth\Registration\RegistrationViewController::class)->name('application.guest.auth.registration.view');
 });

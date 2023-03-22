@@ -13,7 +13,7 @@ body {
   width: 30%;
   margin: auto;
   padding: 2.5% 20px;
-  margin-top: 10%;
+  margin-top: 7.5%;
   box-sizing: border-box;
   position: relative;
   z-index: 1;
@@ -97,4 +97,4 @@ body {
   font-size: 12px;
   text-align: center;
   color: rgba(25, 24, 37, 0.5019607843);
-}/*# sourceMappingURL=login.css.map */
+}/*# sourceMappingURL=registration.css.map */
