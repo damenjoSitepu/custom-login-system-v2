@@ -1,10 +1,10 @@
 <?php 
 namespace App\Transcendent\Support\Route\Module;
 
-// Services
-use App\Services\General\Naming\AppNamingService;
+// Base Class Service
+use App\Transcendent\Support\Route\Route;
 
-class Auth {
+class Auth extends Route {
     /**
      * Route information definition property
      * 
@@ -47,47 +47,28 @@ class Auth {
         ]
     ];
 
+    public function __construct()
+    {
+        /** Send data needed to parent class */
+        parent::__construct(
+            /** Name file of this module */
+            basename(__FILE__,'.php'),
+            /** Route module data needed to be send to the parent class */
+            [
+            'moduleName'    => 'auth',
+            'moduleData'    => self::$routeInfo
+            ], 
+            /** --- */
+        );
+    }
+
     /**
      * Get route information from home modules
      * 
      * @return array<mixed>
      */
-    public function get(): array
+    public function get()
     {
-        return $this->modifyResource('auth');
-        // return self::$routeInfo;
-    }
-
-    private function modifyResource($name = 'auth')
-    {
-        $appName = AppNamingService::getName();
-        // Remove module identifier ( title of array module like: 'auth', 'home', etc)
-        $moduleWithoutIdentifier = self::$routeInfo[$name];
-        // Loop every module data to be modified
-        foreach ($moduleWithoutIdentifier as $keyModule => $valueModule) {
-            // Make first character of title to be uppercase
-            if (isset($valueModule['title'])) {
-                if (!empty($valueModule['title'])) {
-                    $moduleWithoutIdentifier[$keyModule]['title'] = $appName . ' | ' . ucfirst($valueModule['title']);
-                }
-            }
-            // Modify route path to be the real 'route path'
-            if (isset($valueModule['routePath'])) {
-                $slashPrefix = '/';
-                $replaceDotWithSlash = str_replace('.','/',$valueModule['routePath']);
-                $moduleWithoutIdentifier[$keyModule]['routePath'] = $slashPrefix . $replaceDotWithSlash;
-            }
-            // Modify route name with adding name of applications in lowercase 
-            if (isset($valueModule['routeName'])) {
-                $moduleWithoutIdentifier[$keyModule]['routeName'] = strtolower($appName) . '.' . $valueModule['routeName'];
-            }
-            // Modify view with adding name of applications ( application prefix ) in lowercase
-            if (isset($valueModule['view'])) {
-                $moduleWithoutIdentifier[$keyModule]['view'] = 'application' . '.' . $valueModule['view'];
-            }
-        }
-        // Return back the module data
-        self::$routeInfo[$name] = $moduleWithoutIdentifier; 
-        return self::$routeInfo;
+        return $this->modifyResource();
     }
 }

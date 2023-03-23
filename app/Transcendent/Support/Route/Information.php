@@ -31,7 +31,7 @@ class Information implements RouteRootInformation {
     ){
         // Merge All Route Information
         $mergeAllRouteInformation = array_merge(
-            $authModule->get()
+            $authModule->get() ?: []
         );
         // Initialization Starts Here
         self::$allRouteInformation = $mergeAllRouteInformation;
