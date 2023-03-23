@@ -4,8 +4,8 @@ namespace App\Services\General\Naming;
 /**
  * Documentation
  * 
- * @method static getName()
- * @method static getAliasName()
+ * @method static string getName()
+ * @method static string getAliasName()
  */
 
 class AppNamingService {
