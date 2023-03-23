@@ -24,8 +24,8 @@ Route::get('/', function () {
 });
 
 Route::get('/auth/registration', function() {
-    $routeInfo = RouteInfo::get('auths');
-    dd($routeInfo);
+    $routeInfo1 = RouteInfo::get('login.auth');
+    dd($routeInfo1);
 });
 
 

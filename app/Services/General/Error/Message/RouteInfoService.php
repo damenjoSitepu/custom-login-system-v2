@@ -16,6 +16,6 @@ class RouteInfoService {
      */
     public static function cannotFindPath(string $pathName = '')
     {
-        return throw new \Exception("We've trying hard as we can, but we cannot find path: [{$pathName}] on the route information that you've give before...");
+        return throw new \Exception("Main path: [$pathName] was not found on our directories. Please try to check our these listed modules in this directories as well:");
     }
 }
