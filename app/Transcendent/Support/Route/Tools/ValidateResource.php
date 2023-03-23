@@ -102,13 +102,23 @@ class ValidateResource {
         /** Separate string path with (.) delimiter */
         $separatePaths = explode('.',self::$path);
         $routeInfo = self::$moduleData;
+
+        /** When only one main path detected */
         if (count($separatePaths) === 1) {
+            /** Check if this main path was exists */
             if (isset($routeInfo[self::$path])) {
                 /** Get sub path by default ( in first order only ) */ 
                 $subPathByDefault = array_key_first($routeInfo[self::$path]);
                 return $routeInfo[self::$path][$subPathByDefault];
             }
-        } else if (count($separatePaths) > 1) {
+        } 
+
+        /** 
+         * When When path consist of main path, sub path, 
+         * and so on, we need to check each of
+         * them one by one as well
+         */
+        if (count($separatePaths) > 1) {
             if (isset($routeInfo[$separatePaths[0]])) {
                 $subPathByResult = '';
                 for ($i = 1; $i < count($separatePaths); $i++) {
