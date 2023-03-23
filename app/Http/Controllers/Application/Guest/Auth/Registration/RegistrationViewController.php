@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
+use App\Transcendent\Support\Facades\RouteInfo;
+
 class RegistrationViewController extends Controller
 {
     /**
@@ -15,6 +17,7 @@ class RegistrationViewController extends Controller
      */
     public function __invoke(): View
     {
+        dd(RouteInfo::get());
         return view('application.guest.auth.registration',[
             'title' => 'CLS | Registration'
         ]);

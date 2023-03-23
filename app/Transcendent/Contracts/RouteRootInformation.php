@@ -17,5 +17,5 @@ interface RouteRootInformation {
      * 
      * @return string
      */
-    public static function get(string $routeInfo): string;
+    public static function get(string | array $routeInfo);
 }

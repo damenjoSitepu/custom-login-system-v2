@@ -194,7 +194,10 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-
+        /**
+         * Our Custom Providers
+         */
+        App\Providers\Application\Route\InformationServiceProvider::class,
     ],
 
     /*
@@ -210,6 +213,10 @@ return [
 
     'aliases' => Facade::defaultAliases()->merge([
         // 'ExampleClass' => App\Example\ExampleClass::class,
+        /**
+         * Our Custom Facades
+         */
+        'RouteInfo' => App\Transcendent\Support\Facades\RouteInfo::class
     ])->toArray(),
 
 ];
