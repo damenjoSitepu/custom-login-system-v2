@@ -19,9 +19,9 @@ class Route implements RouteRoot {
     /**
      * Module name properties
      * 
-     * @var string
+     * @var array<string>
      */
-    private static $moduleName = '';
+    private static $moduleName = [];
 
     /**
      * Route module data properties
@@ -42,8 +42,8 @@ class Route implements RouteRoot {
     {
         self::$currentFileNameWithoutExtension = $currentFileNameWithoutExtension;
         if (!empty($routeModuleData)) {
-            self::$moduleName = $routeModuleData['moduleName'];
-            self::$moduleData = $routeModuleData['moduleData'];
+            self::$moduleData = array_merge(self::$moduleData, $routeModuleData['moduleData']);
+            array_push(self::$moduleName, $routeModuleData['moduleName']);
         }
 
         // Instantiate Tools Needed

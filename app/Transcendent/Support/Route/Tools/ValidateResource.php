@@ -120,7 +120,11 @@ class ValidateResource {
          */
         if (count($separatePaths) > 1) {
             if (isset($routeInfo[$separatePaths[0]])) {
+                /** Result Sub Path By Finding */
                 $subPathByResult = '';
+                /** Array Key First From Every Main Path Module Data */
+                $subPathByDefault = array_key_first($routeInfo[$separatePaths[0]]);
+
                 for ($i = 1; $i < count($separatePaths); $i++) {
                     /**
                      * If only two paths detected, and the first iteration
@@ -128,7 +132,7 @@ class ValidateResource {
                      * with path[0] and subPath are set by default
                      */
                     if ($i === (count($separatePaths) - 1) && count($separatePaths) === 2 && !isset($routeInfo[$separatePaths[0]][$separatePaths[$i]])) {
-                        $subPathByResult = array_key_first($routeInfo[$separatePaths[0]]);
+                        $subPathByResult = $subPathByDefault;
                         break;
                     }
                     /**
@@ -137,6 +141,15 @@ class ValidateResource {
                      * (previously sub path) as well
                      */
                     if ($i > 1 && !isset($routeInfo[$separatePaths[0]][$separatePaths[$i]])) {
+                        /**
+                         * If there only one route information data in the certain 
+                         * main path, we need to return sub path by default 
+                         * ( first key of every main path data )
+                         */
+                        if (count($routeInfo[$separatePaths[0]]) === 1) {
+                            return $routeInfo[$separatePaths[0]][$subPathByDefault];
+                        }
+
                         $subPathByResult = $separatePaths[$i - 1];
                         break;
                     }

@@ -6,6 +6,7 @@ namespace App\Transcendent\Support\Route;
 use App\Transcendent\Contracts\RouteRootInformation;
 // Modules
 use App\Transcendent\Support\Route\Module\Auth;
+use App\Transcendent\Support\Route\Module\Home;
 // Base Class Service
 use App\Transcendent\Support\Route\Route;
 use App\Transcendent\Support\Route\Tools\UniformResource;
@@ -29,11 +30,13 @@ class Information extends Route implements RouteRootInformation {
      * Merge Route Information Here
      */
     public function __construct(
-        private Auth $authModule
+        private Auth $authModule,
+        private Home $homeModule,
     ){
         // Merge All Route Information
         $mergeAllRouteInformation = array_merge(
-            $authModule->get() ?: []
+            $authModule->get() ?: [],
+            $homeModule->get() ?: [],
         );
         // Initialization Starts Here
         self::$allRouteInformation = $mergeAllRouteInformation;
@@ -50,9 +53,10 @@ class Information extends Route implements RouteRootInformation {
      * @param string | array
      * @return App\Transcendent\Support\Route\Tools\UniformResource
      */
-    public static function get(string | array $path = []): UniformResource
+    public static function get(string | array $path = [])
     {
         /** Turn given array in results into single object */
+        // return self::$allRouteInformation;
         return new UniformResource(self::validateResource($path,self::$allRouteInformation));
     }
 }

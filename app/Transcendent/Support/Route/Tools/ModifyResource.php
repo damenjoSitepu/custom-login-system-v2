@@ -15,9 +15,9 @@ class ModifyResource {
     /**
      * Module name properties
      * 
-     * @var string
+     * @var array<string>
      */
-    private static $moduleName = '';
+    private static $moduleName = [];
 
     /**
      * Route module data properties
@@ -26,9 +26,9 @@ class ModifyResource {
      */
     private static $moduleData = [];
 
-    public function __construct(string $moduleName = '', array $moduleData = [], string $currentFileNameWithoutExtension = '')
+    public function __construct(array $moduleName = [], array $moduleData = [], string $currentFileNameWithoutExtension = '')
     {
-        self::$currentFileNameWithoutExtension = $currentFileNameWithoutExtension;
+        // self::$currentFileNameWithoutExtension = $currentFileNameWithoutExtension;
         self::$moduleName = $moduleName;
         self::$moduleData = $moduleData;
     }
@@ -40,18 +40,22 @@ class ModifyResource {
      */
     public function doModifyResource(): array
     {
-        /** Validate parameter are empty or not */
-        if(empty(self::$moduleName) || empty(self::$moduleData)) {
-            throw new \Exception("Something In ". self::$currentFileNameWithoutExtension. " Resource Module Root Is Empty. Please Check It Out...");
+        /** Validate parameter are empty or not ( For Every Main Path Iteration ) */
+        self::checkEachMainPathOnCertainModule();
+        /** Loop every module data to be modified ( Adding mainPath key to every main module iteration ) */
+        foreach (self::$moduleData as $mainPathName => $valueModule) {
+            if (array_key_exists('isModify',self::$moduleData[$mainPathName])) continue;
+            foreach (self::$moduleData[$mainPathName] as $subPathName => $subValueModule) {
+                if (! isset(self::$moduleData[$mainPathName][$subPathName]['isModify'])) {
+                    $this->changeEverySourceValue($mainPathName,$subPathName, $subValueModule);
+                }
+            }
         }
-        /** Remove module identifier ( title of array module like: 'auth', 'home', etc) */
-        $moduleWithoutIdentifier = self::$moduleData[self::$moduleName];
-        /** Loop every module data to be modified */
-        foreach ($moduleWithoutIdentifier as $keyModule => $valueModule) {
-            $this->changeEverySourceValue($keyModule,$valueModule);
-        }
-        /** Return back the module data */
-        return self::$moduleData;
+        /** Return back the module data and remove isModify Modifier Too */
+        return array_map(function($moduleData) {
+            unset($moduleData['isModify']);
+            return $moduleData;
+        },self::$moduleData);
     }
 
     /**
@@ -72,16 +76,18 @@ class ModifyResource {
      * @param array $valueModule
      * @return void
      */
-    private function changeEverySourceValue(string $keyModule = '', array $valueModule = []): void
+    private function changeEverySourceValue(string $mainPathName = '', string $subPathName = '', array $valueModule = []): void
     {
-            // Change Source Title
-            $this->changeSourceTitle($keyModule, $valueModule['title']);
-            // Change Route Path 
-            $this->changeSourceRoutePath($keyModule, $valueModule['routePath']);
-            // Change Route Name
-            $this->changeSourceRouteName($keyModule, $valueModule['routeName']);
-            // Change View
-            $this->changeSourceView($keyModule, isset($valueModule['view']) ? $valueModule['view'] : '');
+        /** Mark this data has been edited */
+        if (!array_key_exists('isModify',self::$moduleData[$mainPathName])) self::$moduleData[$mainPathName]['isModify'] = true;
+        // Change Source Title
+        $this->changeSourceTitle($mainPathName, $subPathName, $valueModule['title']);
+        // Change Route Path 
+        $this->changeSourceRoutePath($mainPathName, $subPathName, $valueModule['routePath']);
+        // Change Route Name
+        $this->changeSourceRouteName($mainPathName, $subPathName, $valueModule['routeName']);
+        // Change View
+        $this->changeSourceView($mainPathName, $subPathName, isset($valueModule['view']) ? $valueModule['view'] : '');
     }
 
     /**
@@ -91,14 +97,14 @@ class ModifyResource {
      * @param string $title
      * @return void
      */
-    private function changeSourceTitle(string $keyModule = '',string $title = ''): void
+    private function changeSourceTitle(string $mainPathName = '', string $subPathName = '',string $title = ''): void
     {
         // Make first character of title to be uppercase
         if (isset($title)) {
             if (!empty($title)) {
                 /** Replace all (.) char with space character ( if exists ) */
                 $title = str_replace('.',' ',$title);
-                self::$moduleData[self::$moduleName][$keyModule]['title'] = $this->getAppName() . ' | ' . ucfirst($title);
+                self::$moduleData[$mainPathName][$subPathName]['title'] = $this->getAppName() . ' | ' . ucfirst($title);
             }
         }
     }
@@ -110,13 +116,13 @@ class ModifyResource {
      * @param string $routePath
      * @return void
      */
-    private function changeSourceRoutePath(string $keyModule = '', string $routePath = ''): void 
+    private function changeSourceRoutePath(string $mainPathName = '', string $subPathName = '', string $routePath = ''): void 
     {
         // Modify route path to be the real 'route path'
         if (isset($routePath)) {
             $slashPrefix = '/';
             $replaceDotWithSlash = str_replace('.','/',$routePath);
-            self::$moduleData[self::$moduleName][$keyModule]['routePath'] = $slashPrefix . $replaceDotWithSlash;
+            self::$moduleData[$mainPathName][$subPathName]['routePath'] = $slashPrefix . $replaceDotWithSlash;
         }
     }
 
@@ -127,11 +133,11 @@ class ModifyResource {
      * @param string $routeName
      * @return void
      */
-    private function changeSourceRouteName(string $keyModule = '', string $routeName = ''): void 
+    private function changeSourceRouteName(string $mainPathName = '', string $subPathName = '', string $routeName = ''): void 
     {
         // Modify route name with adding name of applications in lowercase 
         if (isset($routeName)) {
-            self::$moduleData[self::$moduleName][$keyModule]['routeName'] = $this->getAppName(false) . '.' . $routeName;
+            self::$moduleData[$mainPathName][$subPathName]['routeName'] = $this->getAppName(false) . '.' . $routeName;
         }
     }
 
@@ -142,11 +148,32 @@ class ModifyResource {
      * @param string $view
      * @return void
      */
-    private function changeSourceView(string $keyModule = '', string $view = ''): void 
+    private function changeSourceView(string $mainPathName = '', string $subPathName = '', string $view = ''): void 
     {
         // Modify view with adding name of applications ( application prefix ) in lowercase
         if (!empty($view)) {
-            self::$moduleData[self::$moduleName][$keyModule]['view'] = 'application' . '.' . $view;
+            self::$moduleData[$mainPathName][$subPathName]['view'] = 'application' . '.' . $view;
+        }
+    }
+
+    /**
+     * Validate parameter are empty or not ( For Every Main Path Iteration )
+     * 
+     * @return void
+     */
+    private function checkEachMainPathOnCertainModule()
+    {
+        for ($i = 0; $i < count(self::$moduleName); $i++) {
+            /** If route main path in certain module was not exists */
+            if (! isset(self::$moduleData[self::$moduleName[$i]])) {
+                throw new \Exception("Main Default Path: [". ucfirst(strtolower(self::$moduleName[$i])) . "] Module Was Not Exists.");
+                break;
+            }
+            /** If Main path contains empty array */
+            if (empty(self::$moduleData[self::$moduleName[$i]])) {
+                throw new \Exception("Route Information In ". ucfirst(strtolower(self::$moduleName[$i])) . " Resource Module Root Are Empty. Please Check It Out...");
+                break;
+            }
         }
     }
 }
