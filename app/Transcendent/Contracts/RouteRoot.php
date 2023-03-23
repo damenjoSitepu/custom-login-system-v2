@@ -3,5 +3,12 @@
 namespace App\Transcendent\Contracts;
 
 interface RouteRoot {
-    public function modifyResource();
+    /**
+     * Modify resources of every module name
+     * 
+     * @return array<mixed>
+     */
+    public function modifyResource(): array;
+
+    public static function validateResource();
 }

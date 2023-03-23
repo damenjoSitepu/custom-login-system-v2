@@ -6,14 +6,16 @@ namespace App\Transcendent\Support\Route;
 use App\Transcendent\Contracts\RouteRootInformation;
 // Modules
 use App\Transcendent\Support\Route\Module\Auth;
+// Base Class Service
+use App\Transcendent\Support\Route\Route;
+use App\Transcendent\Support\Route\Tools\UniformResource;
 
 /**
  * Documentation
  * 
- * @method static get(string | array $routeInfo)
+ * @method static get(string | array $path)
  */
-
-class Information implements RouteRootInformation {
+class Information extends Route implements RouteRootInformation {
     /**
      * Initialize all route information from every file 
      * which contains in transcendent route module
@@ -39,14 +41,17 @@ class Information implements RouteRootInformation {
 
     /**
      * Get Route Information Definition
-     * - Route Name
-     * - View Name
-     * - Title Name
+     * - Title ( Required )
+     * - Route Path ( Required )
+     * - Route Name ( Required )
+     * - View ( Optional )
+     * - Is Active ( Required )
      * 
      * @param string | array
      */
-    public static function get(string | array $routeInfo = [])
+    public static function get(string | array $path = [])
     {
-        return self::$allRouteInformation;
+        /** Turn given array in results into single object */
+        return new UniformResource(self::validateResource($path,self::$allRouteInformation));
     }
 }

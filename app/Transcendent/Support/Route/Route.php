@@ -6,6 +6,7 @@ namespace App\Transcendent\Support\Route;
 use App\Transcendent\Contracts\RouteRoot;
 // Tools
 use App\Transcendent\Support\Route\Tools\ModifyResource;
+use App\Transcendent\Support\Route\Tools\ValidateResource;
 
 class Route implements RouteRoot {
     /**
@@ -54,8 +55,13 @@ class Route implements RouteRoot {
      * 
      * @return array<mixed>
      */
-    public function modifyResource()
+    public function modifyResource(): array
     {
         return $this->modifyResource->doModifyResource();
+    }
+
+    public static function validateResource(string | array $path = [], array $moduleData = [])
+    {
+        return ValidateResource::doValidateResource($path,$moduleData);
     }
 }
