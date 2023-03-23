@@ -16,23 +16,23 @@ class Auth extends Route {
          */
         'auth' => [
             /**
-             * Registration
-             */
-            'registration'  => [
-                'title'     => 'registration', 
-                'routePath' => 'auth.registration',
-                'routeName' => 'guest.auth.registration.view.index',
-                'view'      => 'guest.auth.registration',
-                'isActive'  => true
-            ],
-            /**
-             * Login
+             * Login View
              */
             'login'         => [
                 'title'     => 'login',
                 'routePath' => 'auth',
                 'routeName' => 'guest.auth.login.view.index',
                 'view'      => 'guest.auth.login',
+                'isActive'  => true
+            ],
+            /**
+             * Registration View
+             */
+            'registration'  => [
+                'title'     => 'registration', 
+                'routePath' => 'auth.registration',
+                'routeName' => 'guest.auth.registration.view.index',
+                'view'      => 'guest.auth.registration',
                 'isActive'  => true
             ],
             /**

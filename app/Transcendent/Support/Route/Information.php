@@ -48,8 +48,9 @@ class Information extends Route implements RouteRootInformation {
      * - Is Active ( Required )
      * 
      * @param string | array
+     * @return App\Transcendent\Support\Route\Tools\UniformResource
      */
-    public static function get(string | array $path = [])
+    public static function get(string | array $path = []): UniformResource
     {
         /** Turn given array in results into single object */
         return new UniformResource(self::validateResource($path,self::$allRouteInformation));

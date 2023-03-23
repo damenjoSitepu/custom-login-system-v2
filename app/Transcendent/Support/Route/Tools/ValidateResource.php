@@ -2,6 +2,9 @@
 
 namespace App\Transcendent\Support\Route\Tools; 
 
+// Services
+use App\Services\General\Error\Message\RouteInfoService;
+
 class ValidateResource {
     /**
      * Path
@@ -51,15 +54,16 @@ class ValidateResource {
      * @param array
      * @return array<mixed>
      */
-    public static function doValidateResource(string | array $path = [], array $moduleData = []): array
+    public static function doValidateResource(string | array $path = [], array $moduleData = [])
     {
-        // Init Value
+        /** Init Value */
         self::initValue($path, $moduleData);
-        // First Validation
+        /** First Validation */
         $firstModuleDataResultWithValidation = self::checkEmptyPath();
         if ($firstModuleDataResultWithValidation !== self::KEEP_MOVING) return $firstModuleDataResultWithValidation;
 
-        return [];
+        // Validation
+        return self::matchingRouteInformation();
     }
 
     /**
@@ -68,10 +72,36 @@ class ValidateResource {
      * @return string
      * @return array<mixed>
      */
-    public static function checkEmptyPath(): array | string
+    private static function checkEmptyPath(): array | string
     {
         // If Path is empty
         if (empty(self::$path)) return self::$moduleData[self::$defaultPath]['registration'];
         return self::KEEP_MOVING;
+    }
+
+    private static function matchingRouteInformation()
+    {
+        if (is_string(self::$path)) {
+            return self::matchingRouteInformationUsingStringType();
+        }
+        // return self::matchingRouteInformationUsingArrayType();
+    }
+
+    private static function matchingRouteInformationUsingStringType()
+    {
+        $separatePaths = explode('.',self::$path);
+        if (count($separatePaths) === 1) {
+            if (isset(self::$moduleData[self::$path])) {
+                /** Get sub path by default ( in first order only ) */ 
+                $subPathByDefault = array_key_first(self::$moduleData[self::$path]);
+                return self::$moduleData[self::$path][$subPathByDefault];
+            }
+        }
+        return RouteInfoService::cannotFindPath(self::$path);
+    }
+
+    private static function matchingRouteInformationUsingArrayType()
+    {
+
     }
 }
