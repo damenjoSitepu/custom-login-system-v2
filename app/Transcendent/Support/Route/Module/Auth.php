@@ -39,7 +39,7 @@ class Auth extends Route {
              * Registration Process
              */
             'signup'        => [
-                'title'     => 'Sign up Process',
+                'title'     => 'sign.up.process',
                 'routePath' => 'auth.registration.sign-up',
                 'routeName' => 'guest.auth.registration.process.signup',
                 'isActive'  => true

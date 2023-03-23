@@ -96,6 +96,8 @@ class ModifyResource {
         // Make first character of title to be uppercase
         if (isset($title)) {
             if (!empty($title)) {
+                /** Replace all (.) char with space character ( if exists ) */
+                $title = str_replace('.',' ',$title);
                 self::$moduleData[self::$moduleName][$keyModule]['title'] = $this->getAppName() . ' | ' . ucfirst($title);
             }
         }
