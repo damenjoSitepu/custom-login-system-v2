@@ -81,14 +81,17 @@ class ValidateResource {
 
     private static function matchingRouteInformation()
     {
+        /** Will applied for path string type */
         if (is_string(self::$path)) {
             return self::matchingRouteInformationUsingStringType();
         }
+        /** Will applied for path array type */
         // return self::matchingRouteInformationUsingArrayType();
     }
 
     private static function matchingRouteInformationUsingStringType()
     {
+        /** Separate string path with (.) delimiter */
         $separatePaths = explode('.',self::$path);
         if (count($separatePaths) === 1) {
             if (isset(self::$moduleData[self::$path])) {
@@ -97,6 +100,7 @@ class ValidateResource {
                 return self::$moduleData[self::$path][$subPathByDefault];
             }
         }
+        /** Return this error message when path are not found */
         return RouteInfoService::cannotFindPath(self::$path);
     }
 
