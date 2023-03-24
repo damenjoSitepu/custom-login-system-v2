@@ -101,68 +101,46 @@ class ValidateResource {
     {
         /** Separate string path with (.) delimiter */
         $separatePaths = explode('.',self::$path);
-        $routeInfo = self::$moduleData;
-
+        /** Return this error message when path are not found */
+        if (! isset(self::$moduleData[$separatePaths[0]])) {
+            return RouteInfoService::cannotFindPath($separatePaths[0]);
+        }
+        /** Matching route algorithm starts here */
+        $routeInfo = self::$moduleData[$separatePaths[0]];
         /** When only one main path detected */
         if (count($separatePaths) === 1) {
             /** Check if this main path was exists */
-            if (isset($routeInfo[self::$path])) {
+            if (isset($routeInfo)) {
                 /** Get sub path by default ( in first order only ) */ 
-                $subPathByDefault = array_key_first($routeInfo[self::$path]);
-                return $routeInfo[self::$path][$subPathByDefault];
+                $subPathByDefault = array_key_first($routeInfo);
+                return $routeInfo[$subPathByDefault];
             }
         } 
-
         /** 
          * When When path consist of main path, sub path, 
          * and so on, we need to check each of
          * them one by one as well
          */
         if (count($separatePaths) > 1) {
-            if (isset($routeInfo[$separatePaths[0]])) {
-                /** Result Sub Path By Finding */
-                $subPathByResult = '';
+            if (isset($routeInfo)) {
                 /** Array Key First From Every Main Path Module Data */
-                $subPathByDefault = array_key_first($routeInfo[$separatePaths[0]]);
-
+                $subPathByDefault = array_key_first($routeInfo);
+                /** Sub path finding for each iteration for the sub main path */
+                $subPathFinding = '';
+                /** Iteration starts here */
                 for ($i = 1; $i < count($separatePaths); $i++) {
-                    /**
-                     * If only two paths detected, and the first iteration
-                     * was return false, we need to return module data
-                     * with path[0] and subPath are set by default
-                     */
-                    if ($i === (count($separatePaths) - 1) && count($separatePaths) === 2 && !isset($routeInfo[$separatePaths[0]][$separatePaths[$i]])) {
-                        $subPathByResult = $subPathByDefault;
-                        break;
-                    }
-                    /**
-                     * If more than two path detected, and the next iteration
-                     * return false, we need to return subPath - 1
-                     * (previously sub path) as well
-                     */
-                    if ($i > 1 && !isset($routeInfo[$separatePaths[0]][$separatePaths[$i]])) {
-                        /**
-                         * If there only one route information data in the certain 
-                         * main path, we need to return sub path by default 
-                         * ( first key of every main path data )
-                         */
-                        if (count($routeInfo[$separatePaths[0]]) === 1) {
-                            return $routeInfo[$separatePaths[0]][$subPathByDefault];
-                        }
-
-                        $subPathByResult = $separatePaths[$i - 1];
-                        break;
-                    }
-                    /** If until last iteration, path has been found */
-                    if (isset($routeInfo[$separatePaths[0]][$separatePaths[$i]])) {
-                        $subPathByResult = $separatePaths[$i];
+                    if (isset($routeInfo[$separatePaths[$i]])) {
+                        $subPathFinding = $separatePaths[$i];
                     }
                 }
-                return $routeInfo[$separatePaths[0]][$subPathByResult];
+                /** If empty, set sub path by default */
+                if (empty($subPathFinding)) {
+                    return $routeInfo[$subPathByDefault];
+                }
+                /** Otherwise */
+                return $routeInfo[$subPathFinding];
             }
         }
-        /** Return this error message when path are not found */
-        return RouteInfoService::cannotFindPath($separatePaths[0]);
     }
 
     private static function matchingRouteInformationUsingArrayType()

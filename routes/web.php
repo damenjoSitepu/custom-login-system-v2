@@ -27,7 +27,9 @@ Route::get('/auth/registration', function() {
     // $routeInfo1 = RouteInfo::get('auth.registration.signup')->data()->title;
     // $routeInfo2 = RouteInfo::get('auth.login')->data()->title;
     // $routeInfo3 = RouteInfo::get('auth.registration.signup')->data();
-    dd(RouteInfo::get('home.login.holy.shit'));
+    // dd(RouteInfo::get('home.login.registration.login.fuck.them'));
+    // dd(RouteInfo::get('auth.registration.login.registration.signup.m.n.index.hotel.auth'));
+    dd(RouteInfo::get('auth.registration.login.home.signup'));
 });
 
 
